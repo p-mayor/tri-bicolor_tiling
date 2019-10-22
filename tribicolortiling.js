@@ -3,17 +3,50 @@
         console.log("hey");
 
 
-        console.log(triBicolorTiling(100, 2, 3, 4));
+        //console.log(triBicolorTiling(100, 2, 3, 4));
 
         //pascal = makeModdedPascalTriable(100,12345787);
 
         //console.log(pascal[50][4]);
 
+        let prime = 12345787;
+
+        // idea calculate array of a in 1 to 100
+        // a^(prime-2) mod prime
+        // see how long this takes
+        function genFermatLittleArray(n){
+            console.log("start");
+            let result = [];
+            result[0] = 1;
+            result[1] = 1;
+            for(let i = 2; i <= n; i++){
+                let c = 1;
+                for(let e = 1; e <= (prime - 2); e++){
+                    c = safeMultiply(c,i);
+                }
+                result[i] = c;
+            }
+            console.log("end");
+            return result;
+        }
+
+        // make sure that when we multiply two numbers that we don't have any overflow
+        // and that we do a sort of modded multiplication
+        // might need to change this to (a*b)%prime
+        // (a % prime) * (b % prime) ) % prime might be too much
+        function safeMultiply(a, b){
+            return ( a * b ) % prime
+        }
+
+        let fermatLittleArray = genFermatLittleArray(100);
+
+
+
         function triBicolorTiling(n, r, g, b) {
             // Your Code Here
 
             // some variables to use (globals)
-            let prime = 12345787; // for easy modding
+             // for easy modding
 
             let pascal = makeModdedPascalTriable(100,prime); // modded binomial coefficients
 
@@ -68,6 +101,22 @@
                 return result;
             }
 
+            // calculates combination (binomial coeficient)
+            // myN!/[myR!*(myN-myR)!]
+            // "ancient" indian algorithm :-)
+            // need to change this to modular combination
+            // change this function to us Fermat's Little Theorem calculations 
+            function combination(myN,myR){
+                if((myN-myR) < myR){
+                    myR = myN-myR;
+                }
+                let result = 1;
+                for(let i = 0; i < myR; i++){
+                    result = result*(myN-i);
+                    result = result/(i+1);
+                }
+                return result;
+            }
 
             // calculates multinomial coeficient
             // n!/(n1!*n2!...)
@@ -85,11 +134,9 @@
                 return result;
             }
 
-            // make sure that when we multiply two numbers that we don't have any overflow
-            // and that we do a sort of modded multiplication
-            function safeMultiply(a, b){
-                return ( (a % prime) * (b % prime) ) % prime
-            }
+
+
+
 
 
             console.log(n + " " + tiles);
